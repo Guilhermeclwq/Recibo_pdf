@@ -33,6 +33,4 @@ A aplicação possui edição em tempo real, layout responsivo e foco em usabili
 
 
 
-```bash
-# Exemplo:
-![preview](./assets/preview.png)
+
