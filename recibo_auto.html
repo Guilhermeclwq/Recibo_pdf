@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recibo - Vip Couros</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; -webkit-print-color-adjust: exact; }
+        .print-only { display: none; }
+        #sugestoes div { padding: 12px; cursor: pointer; border-bottom: 1px solid #f3f4f6; }
+        #sugestoes div:hover { background: #eff6ff; }
+
+        @media (max-width: 768px) {
+            thead { display: none; }
+            #itens tr { display: block; background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+            #itens td { display: flex; justify-content: space-between; align-items: center; border: none !important; padding: 6px 0 !important; width: 100% !important; }
+            
+            .no-print tr { display: flex; flex-direction: column; gap: 8px; padding: 15px; background: #f0fdf4; border-radius: 8px; }
+            .no-print td { display: block; width: 100%; border: none; }
+            .no-print input { width: 100% !important; height: 45px; }
+        }
+
+        @page { 
+            size: A4; 
+            margin: 0;
+         }
+
+@media print {
+  
+    .no-print { display: none !important; }
+.print-only { display: block !important; }
+
+body {
+    background: white !important;
+    padding: 5 !important;
+    margin: 0 !important;
+}
+
+.container-recibo {
+                width: 210mm;
+                height: 297mm;
+                padding: 10mm;
+                margin: 0;
+                box-sizing: border-box;
+            }
+
+table {
+    width: 100% !important;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+thead {
+    display: table-header-group !important;
+    background-color: #1f2937 !important;
+}
+
+thead th {
+    color: white !important;
+    padding: 5px !important;
+    font-size: 15px !important;
+}
+
+tr {
+    display: table-row !important;
+}
+
+td {
+    display: table-cell !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    padding: 5px !important;
+    font-size: 15px !important;
+    word-break: break-word;
+}
+
+input {
+    border: none !important;
+    background: transparent !important;
+    font-size: 15px !important;
+}
+.no-print { display: none !important; }
+            .print-only { display: block !important; }
+
+            .print-only { display: none; }
+.info-box-pdf {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+}
+
+.info-box-pdf {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+}
+
+.info-box-pdf > div {
+    width: 100% !important;
+}
+
+.info-box-pdf .text-right {
+    text-align: right !important;
+}
+.info-box-pdf > div:last-child {
+    margin-left: auto !important;
+    text-align: right !important;
+}
+
+    body {
+        transform: scale(0.95);
+        transform-origin: top left;
+    }
+
+    table, tr, td {
+        page-break-inside: avoid !important;
+    }
+
+    .container-recibo {
+        page-break-after: avoid;
+    }
+}
+
+
+
+        
+    
+        
+    </style>
+</head>
+<body class="bg-gray-100 py-4 px-2 md:py-6 md:px-4">
+
+<div class="no-print max-w-3xl mx-auto mb-4">
+    <button onclick="gerarPDF()" class="bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-3 rounded shadow-lg w-full md:w-auto transition-all">
+        Gerar PDF / Imprimir
+    </button>
+</div>
+
+<div id="recibo" class="container-recibo max-w-3xl mx-auto bg-white p-4 md:p-8 shadow-sm">
+    <div class="header-pdf border-b-2 border-gray-800 pb-4 mb-6 flex justify-between items-end">
+        <h1 class="text-xl md:text-3xl font-bold uppercase tracking-tight">Recibo</h1>
+        <div class="text-right">
+            <div class="text-[10px] uppercase font-bold text-gray-400">Data de Emissão</div>
+            <input id="dataInput" type="date" class="no-print border p-1 rounded text-sm">
+            <div id="dataAtual" class="print-only text-lg font-bold text-blue-700"></div>
+        </div>
+    </div>
+
+    <div class="info-box-pdf grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 bg-gray-50 p-4 rounded border">
+        <div>
+            <p class="text-[10px] font-bold uppercase mb-1 text-gray-500">Fornecedor</p>
+            <input id="fornecedorInput" value="VIP COUROS" class="no-print border p-2 rounded w-full font-semibold">
+            <p id="fornecedor" class="print-only font-bold text-gray-800 text-lg">VIP COUROS</p>
+        </div>
+        <div class="md:text-right">
+            <p class="text-[10px] font-bold uppercase mb-1 text-gray-500">Cliente</p>
+            <input id="clienteInput" value="DOLMEN" class="no-print border p-2 rounded w-full md:text-right font-semibold">
+            <p id="cliente" class="print-only font-bold text-gray-800 text-lg uppercase">DOLMEN</p>
+        </div>
+    </div>
+
+    <div class="overflow-x-auto rounded-lg border-0 md:border mb-6">
+        <table class="min-w-full text-sm">
+            <thead class="bg-gray-800 text-white">
+                <tr>
+                    <th class="py-3 px-4 text-left">Referência</th>
+                    <th class="py-3 px-4 text-left">Descrição / Cor</th>
+                    <th class="py-3 px-4 text-center">Qtd</th>
+                    <th class="py-3 px-4 text-right">Valor Unit.</th>
+                    <th class="py-3 px-4 text-right">Total</th>
+                    <th class="py-3 px-4 text-center no-print">Ação</th>
+                </tr>
+            </thead>
+            <tbody id="itens"></tbody>
+            <tbody class="no-print bg-green-50/50">
+                <tr>
+                    <td>
+                        <div class="relative">
+                            <input id="ref" class="border w-full p-2 rounded" placeholder="Ref">
+                            <div id="sugestoes" class="absolute bg-white border w-full hidden z-10 shadow-xl max-h-40 overflow-y-auto"></div>
+                        </div>
+                    </td>
+                    <td><input id="cor" class="border w-full p-2 rounded" placeholder="Cor"></td>
+                    <td><input id="qtd" type="number" class="border w-full p-2 rounded text-center" placeholder="0"></td>
+                    <td><input id="valor" type="number" class="border w-full p-2 rounded text-right" placeholder="0.00"></td>
+                    <td class="hidden md:table-cell"></td>
+                    <td class="text-center">
+                        <button onclick="addItem()" class="bg-blue-600 text-white px-6 py-2 rounded font-bold hover:bg-blue-700 transition-colors">OK</button>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot class="bg-gray-100 font-bold">
+                <tr>
+                    <td colspan="4" class="text-right px-4 py-3 uppercase text-xs">Total Geral</td>
+                    <td id="totalGeral" class="px-4 py-3 text-right text-lg text-blue-800">R$ 0,00</td>
+                    <td class="no-print"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="mt-60 text-center">
+        <div class="border-b-2 border-gray-400 w-64 mx-auto mb-2"></div>
+        <p class="text-xs font-bold uppercase text-gray-700 tracking-widest">Responsável</p>
+    </div>
+</div>
+
+<script>
+    let itens = [];
+    let historico = JSON.parse(localStorage.getItem("historicoProdutos")) || [];
+
+    const refEl = document.getElementById("ref"), corEl = document.getElementById("cor"), qtdEl = document.getElementById("qtd"), valorEl = document.getElementById("valor");
+    const dataInput = document.getElementById("dataInput"), dataAtual = document.getElementById("dataAtual");
+
+    // DATA
+const hoje = new Date().toISOString().split("T")[0];
+dataInput.value = hoje;
+atualizarDataPrint();
+
+function formatarMoeda(valor){
+    return valor.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    });
+}
+
+function atualizarDataPrint(){
+const [a,m,d] = dataInput.value.split("-");
+dataAtual.innerText = `${d}/${m}/${a}`;
+}
+
+
+    // ATALHO ENTER NO OK
+    [refEl, corEl, qtdEl, valorEl].forEach(el => {
+        el.addEventListener("keypress", (e) => { if(e.key === "Enter") addItem(); });
+    });
+
+    function formatarMoeda(v) { return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
+
+    refEl.addEventListener("input", ()=>{
+        const v = refEl.value.toLowerCase();
+        if(!v) { document.getElementById("sugestoes").classList.add("hidden"); return; }
+        const filtrados = historico.filter(p => p.ref.toLowerCase().includes(v));
+        let html = filtrados.map(p => `<div onclick="select('${p.ref}','${p.cor}','${p.valor}')">${p.ref} - ${p.cor}</div>`).join('');
+        document.getElementById("sugestoes").innerHTML = html;
+        document.getElementById("sugestoes").classList.toggle("hidden", filtrados.length === 0);
+    });
+
+    function select(ref, cor, valor){
+        refEl.value = ref; corEl.value = cor; valorEl.value = valor;
+        document.getElementById("sugestoes").classList.add("hidden");
+        qtdEl.focus();
+    }
+
+    function addItem(){
+        let ref = refEl.value.trim(), cor = corEl.value.trim(), qtd = Number(qtdEl.value), valor = Number(valorEl.value);
+        if(!ref||!cor||!qtd||!valor) return;
+
+        if(!historico.find(p => p.ref.toLowerCase() === ref.toLowerCase() && p.cor.toLowerCase() === cor.toLowerCase())){
+            historico.push({ref,cor,valor});
+            localStorage.setItem("historicoProdutos", JSON.stringify(historico));
+        }
+
+        let ex = itens.find(i => i.ref.toLowerCase() === ref.toLowerCase() && i.cor.toLowerCase() === cor.toLowerCase());
+        if(ex) { ex.qtd += qtd; ex.valor = valor; } else { itens.push({ref,cor,qtd,valor}); }
+
+        render();
+        [refEl, corEl, qtdEl, valorEl].forEach(i => i.value = "");
+        refEl.focus();
+    }
+
+    function render(){
+        let total = 0;
+        document.getElementById("itens").innerHTML = itens.map((i,idx) => {
+            let t = i.qtd * i.valor; total += t;
+            return `<tr>
+                <td><input value="${i.ref}" oninput="itens[${idx}].ref=this.value" class="w-full border p-1 rounded"></td>
+                <td><input value="${i.cor}" oninput="itens[${idx}].cor=this.value" class="w-full border p-1 rounded"></td>
+                <td><input type="number" value="${i.qtd}" oninput="itens[${idx}].qtd=Number(this.value); render()" class="w-full border p-1 text-center rounded"></td>
+                <td>
+    <input 
+        value="${formatarMoeda(i.valor)}" 
+        oninput="itens[${idx}].valor = Number(this.value.replace(/\D/g, '')) / 100; render()" 
+        class="w-full border p-1 text-right rounded">
+</td>
+                <td class="text-right px-2 font-bold text-gray-700">${formatarMoeda(t)}</td>
+                <td class="text-center no-print"><button onclick="itens.splice(${idx},1); render()" class="text-red-600 font-bold">X</button></td>
+            </tr>`;
+        }).join('');
+        document.getElementById("totalGeral").innerText = formatarMoeda(total);
+    }
+
+   // PDF
+function gerarPDF(){
+atualizarDataPrint();
+
+fornecedor.innerText = fornecedorInput.value;
+cliente.innerText = clienteInput.value;
+
+window.print();
+}
+
+render();
+</script>
+</body>
+</html>
